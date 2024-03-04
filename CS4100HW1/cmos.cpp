@@ -8,7 +8,7 @@
 //****************************************************************
 
 
-
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -29,16 +29,16 @@ double calculateSimilarity(vector <pair<int, int>> &v1, vector <pair<int, int>> 
 
 int main(int argc, char* argv[])
 {
-    if (argc != 3)
+    if (argc != 2)
     {
-        cout << "Please enter two filenames" << endl;
+        cout << "Please enter one filenames" << endl;
         return 1;
     }
 
     ifstream file1(argv[1]);
     ifstream file2(argv[2]);
 
-    if (!file1.is_open() || !file2.is_open())
+    if (!file1.is_open())
     {
         cout << "One or both of the files could not be opened" << endl;
         return 1;
@@ -50,81 +50,66 @@ int main(int argc, char* argv[])
     string s2;
     //getline(file1, s1);
     //getline(file2, s2);
-    vector<string> tokens1;
     string token;
-    while (file1 >> token)
-    {
-        tokens1.push_back(token);
-    }
-    vector<string> tokens2;
-    while (file2 >> token)
-    {
-        tokens2.push_back(token);
-    }
-    
-    file1.close();
-    file2.close();
+    string line;
+    vector <vector<pair<int, int>>> allFingerprints;
     int k = 3;
 
-    for (unsigned int i = 0; i < tokens1.size(); i++)
+    while (!file1.eof())
     {
-        cout << tokens1[i] << endl;
-    }
-
-    cout << endl;
-
-    for (unsigned int i = 0; i < tokens2.size(); i++)
-    {
-        cout << tokens2[i] << endl;
-    }
-
-
-    vector<int> m1 = hasher(tokens1);
-    vector <pair<int, int>> result1 = Rollingwindow(m1, 4);
-
-    vector<int> m2 = hasher(tokens2);
-    vector <pair<int, int>> result2 = Rollingwindow(m2, 4);
-
-    vector <pair<int, int>> fingerPrints1;
-    vector <pair<int, int>> fingerPrints2;
-
-    for (unsigned int i = 0; i < result1.size(); i++)
-    {
-       if (result1[i].second != -1)
-       {
-           fingerPrints1.push_back(result1[i]);
-       }
-    }
-
-    for (unsigned int i = 0; i < result2.size(); i++)
-    {
-        if (result2[i].second != -1)
+        vector<string> tokens1;
+        getline(file1, line);
+        stringstream ss(line);
+        while (ss >> token)
         {
-            fingerPrints2.push_back(result2[i]);
+            tokens1.push_back(token);
         }
-    }
 
-    for (unsigned int i = 0; i < fingerPrints1.size(); i++)
+        for (unsigned int i = 0; i < tokens1.size(); i++)
+        {
+            cout << tokens1[i] << " ";
+        }
+
+
+        vector<int> m1 = hasher(tokens1);
+        vector <pair<int, int>> result1 = Rollingwindow(m1, k);
+
+        vector <pair<int, int>> fingerPrints1;
+
+        for (unsigned int i = 0; i < result1.size(); i++)
+        {
+            if (result1[i].second != -1)
+            {
+                fingerPrints1.push_back(result1[i]);
+            }
+        }
+
+        for (unsigned int i = 0; i < fingerPrints1.size(); i++)
+        {
+            cout << fingerPrints1[i].first << " " << fingerPrints1[i].second << endl;
+        }
+
+        allFingerprints.push_back(fingerPrints1);
+
+        cout << endl;
+        cout << endl;
+        cout << endl;
+
+    }
+    file1.close();
+
+    for (unsigned int i = 0; i < allFingerprints.size(); i++)
     {
-        cout << fingerPrints1[i].first << " " << fingerPrints1[i].second << endl;
+        for (unsigned int j = 0; j < allFingerprints[i].size(); j++)
+        {
+            cout << allFingerprints[i][j].first << " " << allFingerprints[i][j].second << endl;
+        }
+        cout << endl;
     }
 
-    cout << endl;
-    cout << endl;
-
-    for (unsigned int i = 0; i < fingerPrints2.size(); i++)
-    {
-        cout << fingerPrints2[i].first << " " << fingerPrints2[i].second << endl;
-    }
-
-    double similarity = calculateSimilarity(fingerPrints1, fingerPrints2);
-    cout << "The similarity of the two files is: " << similarity * 100 << "%" << endl;
 
 
     return 0;
-
-    
-
 }
 
 //
@@ -187,5 +172,5 @@ vector <pair<int, int>> Rollingwindow(vector<int> &v, int k)
 //
 double calculateSimilarity(vector <pair<int, int>> &v1, vector <pair<int, int>> &v2)
 {
-
+    return 0.0;
 }
