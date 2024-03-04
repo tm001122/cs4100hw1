@@ -1,1 +1,1 @@
-Please enter two filenames
+Please enter one filenames

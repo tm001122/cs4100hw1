@@ -21,7 +21,7 @@ cmos: cmos.cpp
 
 test: all PlagarismDetector
 	chmod +x PlagarismDetector
-	./PlagarismDetector
+	./PlagarismDetector Examples
 
 clean:
 	rm -f $(TARGET) lex.yy.c

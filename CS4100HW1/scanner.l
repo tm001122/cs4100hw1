@@ -45,6 +45,6 @@ int in_function = 0; // Flag to track if currently inside a function
 
 int main() {
     yylex();
-    printf("\n");
+    // printf("\n");
     return 0;
 }

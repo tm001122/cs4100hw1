@@ -8,8 +8,8 @@ for f in $FILES
 do
   echo "Tokenizing ${f:len} file..."
   # take action on each file. $f store current file name
-	./scanner < $f
-	echo -ne "${f:len}">>tokens.txt
+	./scanner < $f > scanner_out.txt
+	echo -ne "${f:len}">>tokens.txt # comment this line to not print file names in front of tokens
 	echo -ne " ">>tokens.txt
 	cat scanner_out.txt >> tokens.txt
 	echo "">>tokens.txt
