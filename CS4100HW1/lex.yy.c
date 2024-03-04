@@ -802,7 +802,7 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 15 "c_tokenizer2.l"
-{ printf("%s", yytext); }
+{ printf("%s", yytext); printf(" ");}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
@@ -812,30 +812,30 @@ YY_RULE_SETUP
 case 6:
 YY_RULE_SETUP
 #line 17 "c_tokenizer2.l"
-{ printf("%s", yytext); }
+{ printf("%s", yytext); printf(" "); }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 18 "c_tokenizer2.l"
-{ printf("%s", yytext); }
+{ printf("%s", yytext); printf(" "); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 19 "c_tokenizer2.l"
-{ printf("("); }
+{ printf("( "); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 20 "c_tokenizer2.l"
-{ printf(")"); }
+{ printf(") "); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 21 "c_tokenizer2.l"
 { 
-    printf("{");
+    printf("{ ");
     if (in_function) {
-        printf("fundec(");
+        printf("fundec ( ");
         in_function = 0; // Reset the flag
     }
 }
@@ -843,7 +843,7 @@ YY_RULE_SETUP
 case 11:
 YY_RULE_SETUP
 #line 28 "c_tokenizer2.l"
-{ printf("}"); }
+{ printf("} "); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -851,7 +851,7 @@ YY_RULE_SETUP
 { 
     printf(";");
     if (in_function) {
-        printf("fundec(");
+        printf("fundec ( ");
         in_function = 0; // Reset the flag
     }
 }
@@ -861,7 +861,7 @@ YY_RULE_SETUP
 #line 36 "c_tokenizer2.l"
 { 
     // Check if it's a function declaration
-    printf("fundec(");
+    printf("fundec ( ");
     in_function = 0; // Reset the flag
 }
 	YY_BREAK
