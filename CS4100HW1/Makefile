@@ -5,21 +5,23 @@ CC = g++
 CFLAGS = -Wall -Wextra
 
 # Source files
-SRCS = c_tokenizer2.l cmos.cpp
-
-# Object files
-OBJS = $(SRCS:.cpp)
+SRCS = scanner.l cmos.cpp
 
 # Executable
-TARGET = cmos
+TARGET = cmos scanner
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
+scanner: scanner.l
+	flex scanner.l
+	$(CC) -o scanner lex.yy.c
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+cmos: cmos.cpp
+	$(CC) -o cmos cmos.cpp
+
+test: all PlagarismDetector
+	chmod +x PlagarismDetector
+	./PlagarismDetector
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(TARGET) lex.yy.c
