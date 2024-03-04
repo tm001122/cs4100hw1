@@ -1889,6 +1889,7 @@ void yyfree (void * ptr )
 
 
 int main() {
+    printf("\n");
     yylex();
     return 0;
 }

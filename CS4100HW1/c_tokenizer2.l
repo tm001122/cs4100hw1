@@ -27,7 +27,7 @@ int in_function = 0; // Flag to track if currently inside a function
 }
 "}"                                { printf("} "); }
 ";"                                { 
-    printf(";");
+    printf("; ");
     if (in_function) {
         printf("fundec ( ");
         in_function = 0; // Reset the flag
@@ -45,5 +45,6 @@ int in_function = 0; // Flag to track if currently inside a function
 
 int main() {
     yylex();
+    printf("\n");
     return 0;
 }
