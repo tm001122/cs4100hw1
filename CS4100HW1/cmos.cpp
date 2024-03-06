@@ -52,8 +52,8 @@ int main(int argc, char* argv[])
     string token;
     string line;
     vector <vector<pair<long long, string>>> allFingerprints;
-    int k = 50;
-    int w = 50;
+    int k = 10;
+    int w = 21;
 
 
     while (!file1.eof())
@@ -116,7 +116,7 @@ vector<long long> hasher(vector<string> &v)
         long long hashValue = 0;
         for (unsigned int j = 0; j < v[i].size(); j++)
         {
-            hashValue += v[i][j] * (257 ^ (j + 1));
+            hashValue += v[i][j] * (257 + (j + 1));
         }
         hashValue = hashValue % 734807430501;
         hashValues.push_back(hashValue);
