@@ -192,9 +192,9 @@ double calculateSimilarity(vector <pair<long long, string>> &v1, vector <pair<lo
         set1.insert(v1[i].first);
     }
 
-    for (const auto &pair : v2)
+    for (unsigned int i = 0; i < v2.size(); i++)
     {
-        set2.insert(pair.first);
+        set2.insert(v2[i].first);
     }
 
     double sharedCount = 0.0;
