@@ -201,6 +201,6 @@ double calculateSimilarity(vector<pair<int, int>>& v1, vector<pair<int, int>>& v
 
     // Calculate the Jaccard similarity coefficient
     double similarity = static_cast<double>(intersectionSize) / set1.size();
-
+    
     return similarity;
 }
