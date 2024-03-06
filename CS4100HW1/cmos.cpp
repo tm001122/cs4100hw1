@@ -18,6 +18,7 @@
 #include <fstream> 
 #include <unordered_set>
 #include <algorithm>
+#include <iomanip>
 using namespace std;
 
 vector<long long> hasher(vector<string> &v);
@@ -51,7 +52,8 @@ int main(int argc, char* argv[])
     string token;
     string line;
     vector <vector<pair<long long, string>>> allFingerprints;
-    int k = 10;
+    int k = 50;
+    int w = 50;
 
 
     while (!file1.eof())
@@ -78,26 +80,27 @@ int main(int argc, char* argv[])
 
         vector<long long> m1 = hasher(dividedTokens);
 
-        vector <pair<long long, string>> fingerPrints = Rollingwindow(m1, 20, fileName);
+        vector <pair<long long, string>> fingerPrints = Rollingwindow(m1, w, fileName);
 
         allFingerprints.push_back(fingerPrints);
 
-        cout << endl;
-        cout << endl;
-        cout << endl;
-
     }
     file1.close();
-    cout << allFingerprints.size() << endl;
+
+    vector <pair <double, string>> similarities;
 
     for (unsigned int i = 0; i < allFingerprints.size(); i++)
     {
         for (unsigned int j = i + 1; j < allFingerprints.size(); j++)
         {
-            cout << "Similarity between " << allFingerprints[i][0].second << " and " << allFingerprints[j][0].second << " is: " << calculateSimilarity(allFingerprints[i], allFingerprints[j]) << endl;
-            //calculateSimilarity(allFingerprints[i], allFingerprints[j]);
+            similarities.push_back(make_pair(calculateSimilarity(allFingerprints[i], allFingerprints[j]), allFingerprints[i][0].second + " and " + allFingerprints[j][0].second));
         }
-        cout << endl;
+    }
+
+    sort(similarities.begin(), similarities.end());
+    for (unsigned int i = 0; i < similarities.size(); i++)
+    {
+        cout << similarities[i].second << ":" << similarities[i].first << endl;
     }
 
     return 0;
@@ -111,7 +114,7 @@ vector<long long> hasher(vector<string> &v)
     for (unsigned int i = 0; i < v.size(); i++)
     {
         long long hashValue = 0;
-        for (int j = 0; j < v[i].size(); j++)
+        for (unsigned int j = 0; j < v[i].size(); j++)
         {
             hashValue += v[i][j] * (257 ^ (j + 1));
         }
