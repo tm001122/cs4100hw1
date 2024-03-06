@@ -24,9 +24,9 @@ vector<long long> hasher(vector<string> &v);
 
 vector<string> divider(string s, int k);
 
-vector <pair<int, int>> Rollingwindow(vector<long long> &v, int k);
+vector <pair<long long, string>> Rollingwindow(vector<long long> &v, int k, string fileName);
 
-double calculateSimilarity(vector <pair<int, int>> &v1, vector <pair<int, int>> &v2);
+double calculateSimilarity(vector <pair<long long, string>> &v1, vector <pair<long long, string>> &v2);
 
 int main(int argc, char* argv[])
 {
@@ -50,11 +50,16 @@ int main(int argc, char* argv[])
     //getline(file2, s2);
     string token;
     string line;
-    vector <vector<pair<int, int>>> allFingerprints;
-    int k = 5;
+    vector <vector<pair<long long, string>>> allFingerprints;
+    int k = 10;
+
 
     while (!file1.eof())
     {
+
+        string fileName = "";
+        file1 >> fileName;
+
         vector<string> tokens1;
         getline(file1, line);
         stringstream ss(line);
@@ -71,20 +76,9 @@ int main(int argc, char* argv[])
 
        vector <string> dividedTokens = divider(tokenString, k);
 
-        for (unsigned int i = 0; i < dividedTokens.size(); i++)
-        {
-            cout << dividedTokens[i] << endl;
-        }   
+        vector<long long> m1 = hasher(dividedTokens);
 
-
-        vector<long long> m1 = hasher(tokens1);
-        vector <pair<int, int>> fingerPrints = Rollingwindow(m1, k);
-
-
-        for (unsigned int i = 0; i < fingerPrints.size(); i++)
-        {
-            cout << fingerPrints[i].first << " " << fingerPrints[i].second << endl;
-        }
+        vector <pair<long long, string>> fingerPrints = Rollingwindow(m1, 20, fileName);
 
         allFingerprints.push_back(fingerPrints);
 
@@ -94,19 +88,17 @@ int main(int argc, char* argv[])
 
     }
     file1.close();
+    cout << allFingerprints.size() << endl;
 
     for (unsigned int i = 0; i < allFingerprints.size(); i++)
     {
-        for (unsigned int j = 0; j < allFingerprints[i].size(); j++)
+        for (unsigned int j = i + 1; j < allFingerprints.size(); j++)
         {
-            cout << allFingerprints[i][j].first << " " << allFingerprints[i][j].second << endl;
+            cout << "Similarity between " << allFingerprints[i][0].second << " and " << allFingerprints[j][0].second << " is: " << calculateSimilarity(allFingerprints[i], allFingerprints[j]) << endl;
+            //calculateSimilarity(allFingerprints[i], allFingerprints[j]);
         }
         cout << endl;
     }
-    
-    cout << "Similarity: " << calculateSimilarity(allFingerprints[0], allFingerprints[1]) << endl;
-
-
 
     return 0;
 }
@@ -115,19 +107,19 @@ int main(int argc, char* argv[])
 //change
 vector<long long> hasher(vector<string> &v)
 {
-    vector<long long> hashValues;
+    vector <long long> hashValues;
     for (unsigned int i = 0; i < v.size(); i++)
     {
         long long hashValue = 0;
-        for (unsigned int j = 0; j < v[i].length(); j++)
+        for (int j = 0; j < v[i].size(); j++)
         {
-            hashValue = (hashValue * 1234567 + v[i][j]) % 10000000000;
+            hashValue += v[i][j] * (257 ^ (j + 1));
         }
+        hashValue = hashValue % 734807430501;
         hashValues.push_back(hashValue);
     }
 
     return hashValues;
-
 }
 
 
@@ -146,12 +138,12 @@ vector<string> divider(string s, int k)
 }
 
 //should we save the index of the fingerprint or just keep track of the og file
-vector <pair<int, int>> Rollingwindow(vector<long long> &v, int k)
+vector <pair<long long, string>> Rollingwindow(vector<long long> &v, int k, string fileName)
 {
-    vector <pair<int, int>> selectedFingerprints;
+    vector <pair<long long, string>> selectedFingerprints;
     for (unsigned int i = 0; i < v.size(); i++)
     {
-        selectedFingerprints.push_back(make_pair(v[i], -1));
+        selectedFingerprints.push_back(make_pair(v[i], "-1"));
     }
     int minValue = INT_MAX;
     int minIndex = -1;
@@ -169,16 +161,16 @@ vector <pair<int, int>> Rollingwindow(vector<long long> &v, int k)
             }
         }
         selectedFingerprints[minIndex].first = minValue;
-        selectedFingerprints[minIndex].second = minIndex;
+        selectedFingerprints[minIndex].second = fileName;  
         minValue = INT_MAX;
         start++;
         count++;
     }
 
-    vector <pair<int, int>> finalFingerprints;
+    vector <pair<long long, string>> finalFingerprints;
     for (unsigned int i = 0; i < selectedFingerprints.size(); i++)
     {
-        if (selectedFingerprints[i].second != -1)
+        if (selectedFingerprints[i].second != "-1")
         {
             finalFingerprints.push_back(selectedFingerprints[i]);
         }
@@ -189,13 +181,28 @@ vector <pair<int, int>> Rollingwindow(vector<long long> &v, int k)
 
 //if we keep track of index, does that impact similarity 
 // doesnt care about duplicates 
-double calculateSimilarity(vector <pair<int, int>> &v1, vector <pair<int, int>> &v2)
+double calculateSimilarity(vector <pair<long long, string>> &v1, vector <pair<long long, string>> &v2)
 {
-    double sharedCount = 0.0;
-
+    unordered_set<long long> set1, set2;
     for (unsigned int i = 0; i < v1.size(); i++)
     {
-        sharedCount += std::count(v2.begin(), v2.end(), v1[i]);
+        set1.insert(v1[i].first);
     }
-    return sharedCount / v1.size();
+
+    for (const auto &pair : v2)
+    {
+        set2.insert(pair.first);
+    }
+
+    double sharedCount = 0.0;
+    for (unsigned int i = 0; i < set1.size(); i++)
+    {
+        if (set2.count(v1[i].first) > 0)
+        {
+            sharedCount++;
+        }
+    }
+
+    double similarity = sharedCount / set1.size();
+    return similarity;
 }
