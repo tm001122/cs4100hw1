@@ -3,17 +3,20 @@ FILES=./"$1"/*
 dirEntered="$1"
 len=${#dirEntered}
 len=$(($len+3))
-rm tokens.txt
+rm old_tokens.txt tokens.txt
 for f in $FILES
 do
   echo "Tokenizing ${f:len} file..."
   # take action on each file. $f store current file name
 	./scanner < $f > scanner_out.txt
-	echo -ne "${f:len}">>tokens.txt # comment this line to not print file names in front of tokens
-	echo -ne " ">>tokens.txt
-	cat scanner_out.txt >> tokens.txt
-	echo "">>tokens.txt
+	echo -ne "${f:len}">>old_tokens.txt # comment this line to not print file names in front of tokens
+	echo -ne " ">>old_tokens.txt
+	cat scanner_out.txt >> old_tokens.txt
+	echo "">>old_tokens.txt
 done
+# Create a new text file and copy all but the last line of tokens.txt into it
+head -c -1 old_tokens.txt > tokens.txt
+
 echo "Detecting Plagarism, this may take a few minutes."
 ./cmos > PlagarismReport.txt
 echo "Done. Results stored in PlagarismReport.txt"
