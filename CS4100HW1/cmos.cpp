@@ -52,8 +52,8 @@ int main(int argc, char* argv[])
     string token;
     string line;
     vector <vector<pair<long long, string>>> allFingerprints;
-    int k = 10;
-    int w = 21;
+    int k = 15;
+    int w = 25;
 
 
     while (!file1.eof())
